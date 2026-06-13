@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Inquiry — Neo Group</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:        #C9A96E;
+      --gold-dark:   #A8873E;
+      --gold-light:  #F5EDD8;
+      --gold-pale:   #FBF7EE;
+      --text:        #1a1611;
+      --text-2:      #4a4030;
+      --text-3:      #8a7a60;
+      --border:      rgba(180,150,90,0.15);
+      --border-2:    rgba(180,150,90,0.28);
+      --bg:          #F9F6EF;
+      --surface:     #ffffff;
+      --header-bg:   #111209;
+      --header-border: rgba(201,169,110,0.2);
+      --radius:      10px;
+      --radius-sm:   6px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--header-border);
+      padding: 0 24px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .logo-dot { color: rgba(201,169,110,0.45); margin: 0 1px; font-size: 10px; vertical-align: 2px; }
+    .header-sub { font-size: 11px; color: rgba(201,169,110,0.5); letter-spacing: 0.04em; }
+
+    /* Layout */
+    .container { max-width: 680px; margin: 0 auto; padding: 32px 16px 64px; }
+
+    /* Stepper */
+    .stepper {
+      display: flex;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+    .step-item { display: flex; align-items: center; gap: 8px; }
+    .step-circle {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      font-size: 11px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      flex-shrink: 0;
+    }
+    .step-circle.active  { background: var(--gold); color: #fff; }
+    .step-circle.done    { background: var(--gold-dark); color: #fff; }
+    .step-circle.idle    { background: #ede8dd; color: var(--text-3); }
+    .step-label { font-size: 12px; font-weight: 500; color: var(--text-3); }
+    .step-label.active { color: var(--gold-dark); }
+    .step-connector { flex: 1; height: 1px; background: var(--border); margin: 0 10px; }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 14px;
+    }
+
+    /* Fields */
+    .row { display: grid; gap: 12px; margin-bottom: 12px; }
+    .row.col2 { grid-template-columns: 1fr 1fr; }
+    .row.col3 { grid-template-columns: 1fr 1fr 1fr; }
+    .row.col1 { grid-template-columns: 1fr; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { font-size: 12px; font-weight: 500; color: var(--text-2); }
+    .field label .req { color: #e55; margin-left: 2px; }
+
+    input[type=text], input[type=email], input[type=url],
+    input[type=number], input[type=date], select, textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--surface);
+      transition: border-color 0.15s;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,169,110,0.15);
+    }
+    textarea { min-height: 80px; resize: vertical; }
+    select { cursor: pointer; }
+
+    /* Phone field with country code picker */
+    .phone-wrap {
+      display: flex;
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+    .phone-wrap:focus-within {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,169,110,0.15);
+    }
+    .phone-flag-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 10px;
+      background: var(--gold-pale);
+      border: none;
+      border-right: 1px solid var(--border-2);
+      cursor: pointer;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .phone-flag-btn:hover { background: var(--gold-light); }
+    .phone-flag { font-size: 16px; line-height: 1; }
+    .phone-dial { font-size: 12px; color: var(--text-2); font-weight: 500; }
+    .phone-caret { font-size: 9px; color: var(--text-3); }
+    .phone-wrap input[type=tel] {
+      flex: 1;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 8px 10px;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--surface);
+      outline: none;
+      min-width: 0;
+    }
+
+    /* Country dropdown */
+    .country-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      z-index: 100;
+      width: 280px;
+      max-height: 300px;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .country-dropdown.open { display: flex; }
+    .country-search {
+      padding: 8px 10px;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      color: var(--text);
+      background: var(--surface);
+    }
+    .country-list {
+      overflow-y: auto;
+      flex: 1;
+    }
+    .country-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background 0.1s;
+    }
+    .country-option:hover { background: var(--gold-pale); }
+    .country-option.active { background: var(--gold-light); }
+    .country-option .co-flag { font-size: 18px; width: 24px; text-align: center; }
+    .country-option .co-name { flex: 1; color: var(--text); }
+    .country-option .co-dial { color: var(--text-3); font-size: 12px; }
+
+    /* Chips */
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+    .chip {
+      padding: 5px 13px;
+      border: 1px solid var(--border-2);
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      color: var(--text-2);
+    }
+    .chip:hover { border-color: var(--gold); }
+    .chip.selected {
+      border-color: var(--gold);
+      background: var(--gold-light);
+      color: var(--gold-dark);
+      font-weight: 500;
+    }
+
+    /* Check items */
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 7px;
+      margin-top: 4px;
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 13px;
+      transition: border-color 0.15s, background 0.15s;
+      user-select: none;
+    }
+    .check-item:hover { border-color: var(--gold); }
+    .check-item.selected {
+      border-color: var(--gold);
+      background: var(--gold-light);
+      color: var(--gold-dark);
+    }
+    .check-item input { display: none; }
+    .dot-ring {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-2);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .check-item.selected .dot-ring {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .dot-inner {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #fff;
+      display: none;
+    }
+    .check-item.selected .dot-inner { display: block; }
+
+    /* Sub panel */
+    .sub-panel {
+      margin-top: 12px;
+      padding: 12px 14px;
+      background: var(--gold-pale);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    .sub-panel-title { font-size: 11px; font-weight: 600; color: var(--text-3); margin-bottom: 8px; }
+
+    /* Upload zone */
+    .upload-zone {
+      border: 1.5px dashed var(--border-2);
+      border-radius: var(--radius-sm);
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      color: var(--text-3);
+      font-size: 13px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .upload-zone:hover { border-color: var(--gold); color: var(--gold-dark); }
+    .upload-icon { font-size: 22px; margin-bottom: 6px; }
+    .upload-hint { font-size: 11px; margin-top: 4px; color: var(--text-3); }
+    .file-list { margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
+    .file-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 10px;
+      background: var(--gold-pale);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+    }
+    .file-item span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .file-size { color: var(--text-3); flex-shrink: 0; }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 9px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-secondary {
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: var(--bg); }
+    .btn-primary {
+      background: var(--gold);
+      border: none;
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--gold-dark); }
+    .btn-primary:disabled { background: #dcc99a; cursor: not-allowed; }
+
+    /* Review rows */
+    .review-block { margin-bottom: 14px; }
+    .review-group-label {
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-3);
+      margin-bottom: 6px;
+    }
+    .review-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .review-row:last-child { border-bottom: none; }
+    .review-key { color: var(--text-2); }
+    .review-val { color: var(--text); font-weight: 500; text-align: right; max-width: 60%; }
+
+    /* Notice */
+    .notice {
+      background: var(--gold-pale);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+
+    /* Success */
+    .success-wrap { text-align: center; padding: 48px 16px; }
+    .success-circle {
+      width: 60px; height: 60px; border-radius: 50%;
+      background: var(--gold-light);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 24px;
+      color: var(--gold-dark);
+    }
+    .success-wrap h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+    .success-wrap p { color: var(--text-2); max-width: 340px; margin: 0 auto; }
+
+    /* Error toast */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #333; color: #fff;
+      padding: 10px 20px; border-radius: var(--radius-sm);
+      font-size: 13px; z-index: 999;
+      opacity: 0; transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-right: 6px;
+      vertical-align: -2px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Page visibility */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* Responsive */
+    @media (max-width: 520px) {
+      .row.col2 { grid-template-columns: 1fr; }
+      .row.col3 { grid-template-columns: 1fr 1fr; }
+      .step-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">NEO<span class="logo-dot">&#183;</span>GROUP</div>
+  <div class="header-sub">Product inquiry</div>
+</header>
+
+<div class="container">
+
+  <!-- Stepper -->
+  <div class="stepper">
+    <div class="step-item">
+      <div class="step-circle active" id="sc1">1</div>
+      <span class="step-label active" id="sl1">Contact</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item">
+      <div class="step-circle idle" id="sc2">2</div>
+      <span class="step-label" id="sl2">Product</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item">
+      <div class="step-circle idle" id="sc3">3</div>
+      <span class="step-label" id="sl3">Design</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item">
+      <div class="step-circle idle" id="sc4">4</div>
+      <span class="step-label" id="sl4">Review</span>
+    </div>
+  </div>
+
+  <!-- Page 1: Contact -->
+  <div id="page1" class="page active">
+    <div class="card">
+      <p class="section-title">Contact information</p>
+      <div class="row col2">
+        <div class="field">
+          <label>Full name <span class="req">*</span></label>
+          <input type="text" id="f-name" placeholder="Your name">
+        </div>
+        <div class="field">
+          <label>Company name</label>
+          <input type="text" id="f-company" placeholder="Optional">
+        </div>
+      </div>
+      <div class="row col2">
+        <div class="field">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" id="f-email" placeholder="you@company.com">
+        </div>
+        <div class="field" style="position:relative">
+          <label>WhatsApp / phone</label>
+          <div class="phone-wrap">
+            <button type="button" class="phone-flag-btn" id="phone-flag-btn" onclick="toggleCountryDropdown(event)">
+              <span class="phone-flag" id="selected-flag">🇹🇭</span>
+              <span class="phone-dial" id="selected-dial">+66</span>
+              <span class="phone-caret">▼</span>
+            </button>
+            <input type="tel" id="f-phone-num" placeholder="81 234 5678">
+          </div>
+          <div class="country-dropdown" id="country-dropdown">
+            <input type="text" class="country-search" id="country-search" placeholder="Search country…" oninput="filterCountries(this.value)" autocomplete="off">
+            <div class="country-list" id="country-list"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row col1">
+        <div class="field">
+          <label>Company website</label>
+          <input type="url" id="f-web" placeholder="https://">
+        </div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="goTo(2)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- Page 2: Product -->
+  <div id="page2" class="page">
+    <div class="card">
+      <p class="section-title">Product type</p>
+      <div class="chips" id="prod-types">
+        <div class="chip" data-val="Ring" onclick="toggleChip(this)">Ring</div>
+        <div class="chip" data-val="Earring" onclick="toggleChip(this)">Earring</div>
+        <div class="chip" data-val="Bracelet" onclick="toggleChip(this)">Bracelet</div>
+        <div class="chip" data-val="Bangle" onclick="toggleChip(this)">Bangle</div>
+        <div class="chip" data-val="Necklace" onclick="toggleChip(this)">Necklace</div>
+        <div class="chip" data-val="Pendant" onclick="toggleChip(this)">Pendant</div>
+        <div class="chip" data-val="Charm" onclick="toggleChip(this)">Charm</div>
+      </div>
+      <div id="earring-sub" class="sub-panel" style="display:none">
+        <p class="sub-panel-title">Earring unit</p>
+        <div class="chips">
+          <div class="chip" data-grp="earring-unit" onclick="toggleGroup(this)">Pair</div>
+          <div class="chip" data-grp="earring-unit" onclick="toggleGroup(this)">Single (pc)</div>
+        </div>
+        <p class="sub-panel-title" style="margin-top:10px">Earring type</p>
+        <div class="chips">
+          <div class="chip" data-grp="earring-type" onclick="toggleGroup(this)">Stud – butterfly back</div>
+          <div class="chip" data-grp="earring-type" onclick="toggleGroup(this)">Hook</div>
+          <div class="chip" data-grp="earring-type" onclick="toggleGroup(this)">Hoop</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Metal</p>
+      <div class="check-grid" id="metal-grid">
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Silver</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>18K gold</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>14K gold</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>10K gold</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>9K gold</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Brass</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Bronze</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Plating</p>
+      <div class="check-grid">
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>No plating</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Silver plating</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Rhodium plating</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Gold plating</div>
+      </div>
+      <div class="sub-panel" style="margin-top:10px">
+        <p class="sub-panel-title">Plating thickness</p>
+        <div class="chips">
+          <div class="chip" data-grp="plating-thick" onclick="toggleGroup(this)">Flash (0.25–0.5µm)</div>
+          <div class="chip" data-grp="plating-thick" onclick="toggleGroup(this)">1 micron</div>
+          <div class="chip" data-grp="plating-thick" onclick="toggleGroup(this)">2 microns</div>
+          <div class="chip" data-grp="plating-thick" onclick="toggleGroup(this)">2.5µm (vermeil)</div>
+          <div class="chip" data-grp="plating-thick" onclick="toggleGroup(this)">Other</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Stone</p>
+      <div class="row col3">
+        <div class="field">
+          <label>Stone type</label>
+          <input type="text" id="f-stone" placeholder="Diamond, CZ, Opal…">
+        </div>
+        <div class="field">
+          <label>Natural or lab-grown</label>
+          <select id="f-stone-origin">
+            <option value="">—</option>
+            <option>Natural</option>
+            <option>Lab-grown</option>
+            <option>Not applicable</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Stone count</label>
+          <input type="number" id="f-stone-count" min="0" placeholder="0">
+        </div>
+      </div>
+      <div class="row col2">
+        <div class="field">
+          <label>Shape</label>
+          <input type="text" id="f-stone-shape" placeholder="Round, oval, custom…">
+        </div>
+        <div class="field">
+          <label>Custom shape size (mm)</label>
+          <input type="text" id="f-stone-size" placeholder="L × W × H">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Finish</p>
+      <div class="check-grid" id="finish-grid">
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>High polished</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Matte</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Satin</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Brushed</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Hammered</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Sandblasted</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Oxidized</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Enamel</div>
+        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Black ink</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Order details</p>
+      <div class="row col3">
+        <div class="field">
+          <label>MOQ (pcs)</label>
+          <input type="number" id="f-moq" min="1" placeholder="e.g. 30">
+        </div>
+        <div class="field">
+          <label>Target price (USD/pc)</label>
+          <input type="text" id="f-price" placeholder="e.g. $12">
+        </div>
+        <div class="field">
+          <label>Required by</label>
+          <input type="date" id="f-deadline">
+        </div>
+      </div>
+      <div class="row col1">
+        <div class="field">
+          <label>Additional notes</label>
+          <textarea id="f-notes" placeholder="Special requirements, certifications, packaging…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(1)">&larr; Back</button>
+      <button class="btn btn-primary" onclick="goTo(3)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- Page 3: Design -->
+  <div id="page3" class="page">
+    <div class="card">
+      <p class="section-title">Design files</p>
+      <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+        <div class="upload-icon">&#8593;</div>
+        Upload reference photos or CAD files
+        <div class="upload-hint">STL, OBJ, AI, PDF, JPG, PNG — max 20 MB per file</div>
+        <input type="file" id="file-input" multiple accept=".stl,.obj,.ai,.pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleFiles(this)">
+      </div>
+      <div class="file-list" id="file-list"></div>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Design dimensions</p>
+      <div class="row col3">
+        <div class="field">
+          <label>Length (mm)</label>
+          <input type="number" id="f-dim-l" step="0.1" placeholder="0.0">
+        </div>
+        <div class="field">
+          <label>Width (mm)</label>
+          <input type="number" id="f-dim-w" step="0.1" placeholder="0.0">
+        </div>
+        <div class="field">
+          <label>Thickness (mm)</label>
+          <input type="number" id="f-dim-t" step="0.1" placeholder="0.0">
+        </div>
+      </div>
+      <div class="row col1">
+        <div class="field">
+          <label>Design notes / special instructions</label>
+          <textarea id="f-design-notes" placeholder="Describe the design, logo engraving, stone setting preferences…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="chain-card" style="display:none">
+      <p class="section-title">Chain &amp; clasp</p>
+      <div class="row col2">
+        <div class="field">
+          <label>Chain type</label>
+          <input type="text" id="f-chain-type" placeholder="Cable, box, rope…">
+        </div>
+        <div class="field">
+          <label>Chain length (cm)</label>
+          <input type="number" id="f-chain-len" placeholder="45">
+        </div>
+      </div>
+      <div class="row col2">
+        <div class="field">
+          <label>Chain width (mm)</label>
+          <input type="number" id="f-chain-w" step="0.1" placeholder="1.5">
+        </div>
+        <div class="field">
+          <label>Clasp type</label>
+          <input type="text" id="f-clasp" placeholder="Lobster, toggle…">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Logo &amp; branding</p>
+      <div class="row col1">
+        <div class="field">
+          <label>Logo instructions</label>
+          <textarea id="f-logo" placeholder="Attach logo file above or describe engraving placement, size, and branding requirements…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(2)">&larr; Back</button>
+      <button class="btn btn-primary" onclick="goTo(4)">Review inquiry &rarr;</button>
+    </div>
+  </div>
+
+  <!-- Page 4: Review -->
+  <div id="page4" class="page">
+    <div class="card">
+      <p class="section-title">Review &amp; submit</p>
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:16px">
+        Please confirm your details before submitting. The team will respond within 1 business day.
+      </p>
+      <div class="review-block">
+        <div class="review-group-label">Contact</div>
+        <div id="review-contact"></div>
+      </div>
+      <div class="review-block">
+        <div class="review-group-label">Product</div>
+        <div id="review-product"></div>
+      </div>
+    </div>
+    <div class="notice">
+      By submitting you agree to Neo Group's terms &amp; conditions. Sample orders require 100% advance payment.
+      Setup costs (CAD, printing, mold) are strictly non-refundable once work begins.
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goTo(3)">&larr; Back</button>
+      <button class="btn btn-primary" id="submit-btn" onclick="submitForm()">Submit inquiry</button>
+    </div>
+  </div>
+
+  <!-- Page 5: Success -->
+  <div id="page5" class="page">
+    <div class="success-wrap">
+      <div class="success-circle">&#10003;</div>
+      <h2>Inquiry submitted</h2>
+      <p>Thank you! The Neo Group team will review your inquiry and be in touch within 1 business day.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ─── CONFIG ──────────────────────────────────────────────────────────────────
+  const MAKE_WEBHOOK_URL = 'YOUR_MAKE_WEBHOOK_URL_HERE';
+  const UPLOAD_SERVER    = '/upload'; // proxied by nginx on same domain
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  let uploadedFiles = [];
+
+  function goTo(n) {
+    if (n === 2 && !validatePage1()) return;
+
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page' + n).classList.add('active');
+
+    for (let i = 1; i <= 4; i++) {
+      const sc = document.getElementById('sc' + i);
+      const sl = document.getElementById('sl' + i);
+      if (!sc) continue;
+      if (i < n) {
+        sc.className = 'step-circle done';
+        sc.innerHTML = '&#10003;';
+      } else if (i === n) {
+        sc.className = 'step-circle active';
+        sc.textContent = i;
+        sl.className = 'step-label active';
+      } else {
+        sc.className = 'step-circle idle';
+        sc.textContent = i;
+        sl.className = 'step-label';
+      }
+    }
+
+    if (n === 4) buildReview();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function validatePage1() {
+    const name  = document.getElementById('f-name').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    if (!name)  { showToast('Please enter your name'); return false; }
+    if (!email || !email.includes('@')) { showToast('Please enter a valid email'); return false; }
+    return true;
+  }
+
+  function toggleChip(el) {
+    el.classList.toggle('selected');
+    const types = [...document.querySelectorAll('#prod-types .chip.selected')].map(c => c.dataset.val);
+    document.getElementById('earring-sub').style.display = types.includes('Earring') ? 'block' : 'none';
+    const chainCard = document.getElementById('chain-card');
+    chainCard.style.display = (types.includes('Necklace') || types.includes('Bracelet')) ? 'block' : 'none';
+  }
+
+  function toggleGroup(el) {
+    const grp = el.dataset.grp;
+    document.querySelectorAll('[data-grp="' + grp + '"]').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function toggleCheck(el) {
+    el.classList.toggle('selected');
+  }
+
+  function handleFiles(input) {
+    const list = document.getElementById('file-list');
+    [...input.files].forEach(f => {
+      uploadedFiles.push(f);
+      const item = document.createElement('div');
+      item.className = 'file-item';
+      const size = f.size > 1e6
+        ? (f.size / 1e6).toFixed(1) + ' MB'
+        : Math.round(f.size / 1000) + ' KB';
+      item.innerHTML = '<span>' + f.name + '</span><span class="file-size">' + size + '</span>';
+      list.appendChild(item);
+    });
+  }
+
+  function getChecked(gridId) {
+    return [...document.querySelectorAll('#' + gridId + ' .check-item.selected')]
+      .map(el => [...el.childNodes]
+        .filter(n => n.nodeType === 3)
+        .map(n => n.textContent.trim())
+        .join('')
+      )
+      .filter(Boolean)
+      .join(', ');
+  }
+
+  function getChips(containerId) {
+    return [...document.querySelectorAll('#' + containerId + ' .chip.selected')]
+      .map(c => c.dataset.val || c.textContent.trim()).join(', ');
+  }
+
+  function getGroup(grp) {
+    const el = document.querySelector('[data-grp="' + grp + '"].selected');
+    return el ? el.textContent.trim() : '';
+  }
+
+  function getPhone() {
+    const dial = document.getElementById('selected-dial').textContent;
+    const num  = document.getElementById('f-phone-num').value.trim();
+    return num ? dial + ' ' + num : '';
+  }
+
+  function buildReview() {
+    const cData = [
+      ['Name',      document.getElementById('f-name').value],
+      ['Company',   document.getElementById('f-company').value],
+      ['Email',     document.getElementById('f-email').value],
+      ['Phone',     getPhone()],
+      ['Website',   document.getElementById('f-web').value],
+    ];
+    const pData = [
+      ['Product type',   getChips('prod-types')],
+      ['Metal',          getChecked('metal-grid')],
+      ['Stone',          document.getElementById('f-stone').value],
+      ['Stone origin',   document.getElementById('f-stone-origin').value],
+      ['Finish',         getChecked('finish-grid')],
+      ['MOQ',            document.getElementById('f-moq').value ? document.getElementById('f-moq').value + ' pcs' : ''],
+      ['Target price',   document.getElementById('f-price').value],
+      ['Required by',    document.getElementById('f-deadline').value],
+      ['Notes',          document.getElementById('f-notes').value],
+    ];
+
+    const render = (el, rows) => {
+      el.innerHTML = rows.filter(r => r[1]).map(r =>
+        '<div class="review-row"><span class="review-key">' + r[0] + '</span><span class="review-val">' + r[1] + '</span></div>'
+      ).join('');
+    };
+    render(document.getElementById('review-contact'), cData);
+    render(document.getElementById('review-product'), pData);
+  }
+
+  async function submitForm() {
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+
+    const name = document.getElementById('f-name').value;
+
+    // ── Stage 1: upload files to Drive via upload server ──────────────────────
+    let driveLinks    = [];
+    let driveFolderLink = '';
+
+    if (uploadedFiles.length > 0) {
+      btn.innerHTML = '<span class="spinner"></span>Uploading files…';
+      try {
+        const fd = new FormData();
+        fd.append('clientName',     name);
+        fd.append('submissionDate', new Date().toISOString().slice(0, 10));
+        uploadedFiles.forEach(f => fd.append('files', f));
+
+        const res  = await fetch(UPLOAD_SERVER, { method: 'POST', body: fd });
+        const json = await res.json();
+        driveLinks      = json.links    || [];
+        driveFolderLink = json.folderLink || '';
+      } catch (e) {
+        showToast('File upload failed: ' + e.message + '. Please try again.');
+        btn.disabled = false;
+        btn.innerHTML = 'Submit inquiry';
+        return;
+      }
+    }
+
+    // ── Stage 2: send form data + Drive links to Make webhook ─────────────────
+    btn.innerHTML = '<span class="spinner"></span>Submitting…';
+
+    const payload = {
+      timestamp:    new Date().toISOString(),
+      name,
+      company:      document.getElementById('f-company').value,
+      email:        document.getElementById('f-email').value,
+      phone:        getPhone(),
+      website:      document.getElementById('f-web').value,
+      productTypes: getChips('prod-types'),
+      earringUnit:  getGroup('earring-unit'),
+      earringType:  getGroup('earring-type'),
+      metal:        getChecked('metal-grid'),
+      plating:      getChecked('plating'),
+      platingThick: getGroup('plating-thick'),
+      stoneType:    document.getElementById('f-stone').value,
+      stoneOrigin:  document.getElementById('f-stone-origin').value,
+      stoneCount:   document.getElementById('f-stone-count').value,
+      stoneShape:   document.getElementById('f-stone-shape').value,
+      stoneSize:    document.getElementById('f-stone-size').value,
+      finish:       getChecked('finish-grid'),
+      moq:          document.getElementById('f-moq').value,
+      targetPrice:  document.getElementById('f-price').value,
+      deadline:     document.getElementById('f-deadline').value,
+      notes:        document.getElementById('f-notes').value,
+      dimL:         document.getElementById('f-dim-l').value,
+      dimW:         document.getElementById('f-dim-w').value,
+      dimT:         document.getElementById('f-dim-t').value,
+      designNotes:  document.getElementById('f-design-notes').value,
+      chainType:    document.getElementById('f-chain-type').value,
+      chainLength:  document.getElementById('f-chain-len').value,
+      chainWidth:   document.getElementById('f-chain-w').value,
+      claspType:    document.getElementById('f-clasp').value,
+      logoNotes:    document.getElementById('f-logo').value,
+      // Drive file links instead of raw file data
+      fileNames:    driveLinks.map(f => f.name).join(', '),
+      driveFiles:   driveLinks.map(f => f.link).join('\n'),
+      driveFolderLink,
+    };
+
+    try {
+      await fetch(MAKE_WEBHOOK_URL, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+      });
+
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page5').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (e) {
+      showToast('Submission failed: ' + e.message + '. Please try again.');
+      btn.disabled = false;
+      btn.innerHTML = 'Submit inquiry';
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ── COUNTRY PICKER ──────────────────────────────────────────────────────────
+
+  const COUNTRIES = [
+    { flag:'🇹🇭', name:'Thailand',            dial:'+66'  },
+    { flag:'🇺🇸', name:'United States',        dial:'+1'   },
+    { flag:'🇬🇧', name:'United Kingdom',       dial:'+44'  },
+    { flag:'🇦🇺', name:'Australia',            dial:'+61'  },
+    { flag:'🇦🇹', name:'Austria',              dial:'+43'  },
+    { flag:'🇧🇪', name:'Belgium',              dial:'+32'  },
+    { flag:'🇧🇷', name:'Brazil',               dial:'+55'  },
+    { flag:'🇨🇦', name:'Canada',               dial:'+1'   },
+    { flag:'🇨🇳', name:'China',                dial:'+86'  },
+    { flag:'🇨🇿', name:'Czech Republic',       dial:'+420' },
+    { flag:'🇩🇰', name:'Denmark',              dial:'+45'  },
+    { flag:'🇫🇮', name:'Finland',              dial:'+358' },
+    { flag:'🇫🇷', name:'France',               dial:'+33'  },
+    { flag:'🇩🇪', name:'Germany',              dial:'+49'  },
+    { flag:'🇬🇷', name:'Greece',               dial:'+30'  },
+    { flag:'🇭🇰', name:'Hong Kong',            dial:'+852' },
+    { flag:'🇭🇺', name:'Hungary',              dial:'+36'  },
+    { flag:'🇮🇳', name:'India',                dial:'+91'  },
+    { flag:'🇮🇩', name:'Indonesia',            dial:'+62'  },
+    { flag:'🇮🇪', name:'Ireland',              dial:'+353' },
+    { flag:'🇮🇱', name:'Israel',               dial:'+972' },
+    { flag:'🇮🇹', name:'Italy',                dial:'+39'  },
+    { flag:'🇯🇵', name:'Japan',                dial:'+81'  },
+    { flag:'🇰🇷', name:'South Korea',          dial:'+82'  },
+    { flag:'🇲🇾', name:'Malaysia',             dial:'+60'  },
+    { flag:'🇲🇽', name:'Mexico',               dial:'+52'  },
+    { flag:'🇳🇱', name:'Netherlands',          dial:'+31'  },
+    { flag:'🇳🇿', name:'New Zealand',          dial:'+64'  },
+    { flag:'🇳🇴', name:'Norway',               dial:'+47'  },
+    { flag:'🇵🇭', name:'Philippines',          dial:'+63'  },
+    { flag:'🇵🇱', name:'Poland',               dial:'+48'  },
+    { flag:'🇵🇹', name:'Portugal',             dial:'+351' },
+    { flag:'🇶🇦', name:'Qatar',                dial:'+974' },
+    { flag:'🇷🇺', name:'Russia',               dial:'+7'   },
+    { flag:'🇸🇦', name:'Saudi Arabia',         dial:'+966' },
+    { flag:'🇸🇬', name:'Singapore',            dial:'+65'  },
+    { flag:'🇿🇦', name:'South Africa',         dial:'+27'  },
+    { flag:'🇪🇸', name:'Spain',                dial:'+34'  },
+    { flag:'🇸🇪', name:'Sweden',               dial:'+46'  },
+    { flag:'🇨🇭', name:'Switzerland',          dial:'+41'  },
+    { flag:'🇹🇼', name:'Taiwan',               dial:'+886' },
+    { flag:'🇹🇷', name:'Turkey',               dial:'+90'  },
+    { flag:'🇦🇪', name:'UAE',                  dial:'+971' },
+    { flag:'🇻🇳', name:'Vietnam',              dial:'+84'  },
+  ];
+
+  let filteredCountries = [...COUNTRIES];
+
+  function renderCountryList(list) {
+    const el = document.getElementById('country-list');
+    el.innerHTML = list.map((c, i) =>
+      '<div class="country-option" onclick="selectCountry(' + i + ',this)" data-idx="' + i + '">' +
+      '<span class="co-flag">' + c.flag + '</span>' +
+      '<span class="co-name">' + c.name + '</span>' +
+      '<span class="co-dial">' + c.dial + '</span>' +
+      '</div>'
+    ).join('');
+  }
+
+  function filterCountries(q) {
+    filteredCountries = q
+      ? COUNTRIES.filter(c => c.name.toLowerCase().includes(q.toLowerCase()) || c.dial.includes(q))
+      : [...COUNTRIES];
+    renderCountryList(filteredCountries);
+  }
+
+  function selectCountry(idx, el) {
+    const c = filteredCountries[idx];
+    document.getElementById('selected-flag').textContent = c.flag;
+    document.getElementById('selected-dial').textContent = c.dial;
+    closeCountryDropdown();
+    document.getElementById('f-phone-num').focus();
+  }
+
+  function toggleCountryDropdown(e) {
+    e.stopPropagation();
+    const dd = document.getElementById('country-dropdown');
+    const isOpen = dd.classList.contains('open');
+    if (isOpen) {
+      closeCountryDropdown();
+    } else {
+      dd.classList.add('open');
+      document.getElementById('country-search').value = '';
+      filteredCountries = [...COUNTRIES];
+      renderCountryList(filteredCountries);
+      setTimeout(() => document.getElementById('country-search').focus(), 50);
+    }
+  }
+
+  function closeCountryDropdown() {
+    document.getElementById('country-dropdown').classList.remove('open');
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#country-dropdown') && !e.target.closest('#phone-flag-btn')) {
+      closeCountryDropdown();
+    }
+  });
+
+  // Init: render on load (hidden), Thailand selected by default
+  renderCountryList(COUNTRIES);
+</script>
+</body>
+</html>
