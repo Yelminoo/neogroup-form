@@ -802,6 +802,7 @@
 
   function goTo(n) {
     if (n === 2 && !validatePage1()) return;
+    if (n === 3 && !validatePage2()) return;
 
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page' + n).classList.add('active');
@@ -833,6 +834,28 @@
     const email = document.getElementById('f-email').value.trim();
     if (!name)  { showToast('Please enter your name'); return false; }
     if (!email || !email.includes('@')) { showToast('Please enter a valid email'); return false; }
+    return true;
+  }
+
+  function validatePage2() {
+    if (!document.querySelector('#prod-types .chip.selected')) {
+      showToast('Please select at least one product type'); return false;
+    }
+    if (!document.querySelector('#metal-grid .check-item.selected')) {
+      showToast('Please select at least one metal'); return false;
+    }
+    if (!document.querySelector('#finish-grid .check-item.selected')) {
+      showToast('Please select at least one finish'); return false;
+    }
+    if (!document.getElementById('f-moq').value.trim()) {
+      showToast('Please enter MOQ'); return false;
+    }
+    if (!document.getElementById('f-price').value.trim()) {
+      showToast('Please enter target price'); return false;
+    }
+    if (!document.getElementById('f-deadline').value) {
+      showToast('Please enter required by date'); return false;
+    }
     return true;
   }
 
