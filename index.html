@@ -270,6 +270,11 @@
       background: var(--gold-light);
       color: var(--gold-dark);
     }
+    .check-item.disabled {
+      opacity: 0.35;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
     .check-item input { display: none; }
     .dot-ring {
       width: 14px; height: 14px;
@@ -566,6 +571,7 @@
     <div class="card">
       <p class="section-title">Plating</p>
       <div class="check-grid" id="plating-grid">
+        <div class="check-item" id="plating-none" onclick="selectPlating(this,'')"><div class="dot-ring"><div class="dot-inner"></div></div>No plating</div>
         <div class="check-item" onclick="selectPlating(this,'rhodium')"><div class="dot-ring"><div class="dot-inner"></div></div>Rhodium plating</div>
         <div class="check-item" onclick="selectPlating(this,'gold')"><div class="dot-ring"><div class="dot-inner"></div></div>Gold plating</div>
         <div class="check-item" onclick="selectPlating(this,'')"><div class="dot-ring"><div class="dot-inner"></div></div>Platinum plating</div>
@@ -630,7 +636,7 @@
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Brushed</div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Hammered</div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Sandblasted</div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Oxidized</div>
+        <div class="check-item" onclick="toggleCheck(this); toggleOxidized(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Oxidized</div>
         <div class="check-item" onclick="toggleCheck(this); toggleEnamel(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Enamel</div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Black ink</div>
       </div>
@@ -880,6 +886,20 @@
 
   function toggleMixMetal(el) {
     document.getElementById('mix-metal-panel').style.display = el.classList.contains('selected') ? 'block' : 'none';
+  }
+
+  function toggleOxidized(el) {
+    const isSelected = el.classList.contains('selected');
+    const noneBtn = document.getElementById('plating-none');
+    const allPlating = document.querySelectorAll('#plating-grid .check-item');
+    if (isSelected) {
+      // auto-select No plating and lock all others
+      selectPlating(noneBtn, '');
+      allPlating.forEach(c => { if (c !== noneBtn) c.classList.add('disabled'); });
+    } else {
+      // unlock all plating options
+      allPlating.forEach(c => c.classList.remove('disabled'));
+    }
   }
 
   function toggleEnamel(el) {
