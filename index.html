@@ -630,8 +630,19 @@
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Hammered</div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Sandblasted</div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Oxidized</div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Enamel</div>
+        <div class="check-item" onclick="toggleCheck(this); toggleEnamel(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Enamel</div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Black ink</div>
+      </div>
+      <div id="enamel-sub" class="sub-panel" style="display:none;margin-top:10px">
+        <p class="sub-panel-title">Enamel type</p>
+        <div class="chips" style="margin-bottom:12px">
+          <div class="chip" data-grp="enamel-type" onclick="toggleGroup(this)">3D</div>
+          <div class="chip" data-grp="enamel-type" onclick="toggleGroup(this)">Flat</div>
+        </div>
+        <div class="field">
+          <label>Enamel color</label>
+          <input type="text" id="f-enamel-color" placeholder="e.g. Red, Navy blue, Pantone 485…">
+        </div>
       </div>
     </div>
 
@@ -847,6 +858,14 @@
     document.getElementById('mix-metal-panel').style.display = el.classList.contains('selected') ? 'block' : 'none';
   }
 
+  function toggleEnamel(el) {
+    document.getElementById('enamel-sub').style.display = el.classList.contains('selected') ? 'block' : 'none';
+    if (!el.classList.contains('selected')) {
+      document.querySelectorAll('[data-grp="enamel-type"]').forEach(c => c.classList.remove('selected'));
+      document.getElementById('f-enamel-color').value = '';
+    }
+  }
+
   function selectPlating(el, type) {
     const wasSelected = el.classList.contains('selected');
     document.querySelectorAll('#plating-grid .check-item').forEach(c => c.classList.remove('selected'));
@@ -911,7 +930,7 @@
       ['Plating',        [getChecked('plating-grid'), getGroup('plating-color')].filter(Boolean).join(' / ')],
       ['Stone',          document.getElementById('f-stone').value],
       ['Stone origin',   document.getElementById('f-stone-origin').value],
-      ['Finish',         getChecked('finish-grid')],
+      ['Finish',         [getChecked('finish-grid'), getGroup('enamel-type') ? 'Enamel: ' + getGroup('enamel-type') + (document.getElementById('f-enamel-color').value ? ' / ' + document.getElementById('f-enamel-color').value : '') : ''].filter(Boolean).join(', ')],
       ['MOQ',            document.getElementById('f-moq').value ? document.getElementById('f-moq').value + ' pcs' : ''],
       ['Target price',   document.getElementById('f-price').value],
       ['Required by',    document.getElementById('f-deadline').value],
@@ -980,6 +999,8 @@
       stoneShape:   document.getElementById('f-stone-shape').value,
       stoneSize:    document.getElementById('f-stone-size').value,
       finish:       getChecked('finish-grid'),
+      enamelType:   getGroup('enamel-type'),
+      enamelColor:  document.getElementById('f-enamel-color').value,
       moq:          document.getElementById('f-moq').value,
       targetPrice:  document.getElementById('f-price').value,
       deadline:     document.getElementById('f-deadline').value,
