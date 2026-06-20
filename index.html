@@ -102,6 +102,7 @@
       color: var(--text-3);
       margin-bottom: 14px;
     }
+    .req { color: #e53e3e; margin-left: 3px; }
 
     /* Fields */
     .row { display: grid; gap: 12px; margin-bottom: 12px; }
@@ -517,7 +518,7 @@
   <!-- Page 2: Product -->
   <div id="page2" class="page">
     <div class="card">
-      <p class="section-title">Product type</p>
+      <p class="section-title">Product type<span class="req">*</span></p>
       <div class="chips" id="prod-types">
         <div class="chip" data-val="Ring" onclick="toggleChip(this)">Ring</div>
         <div class="chip" data-val="Earring" onclick="toggleChip(this)">Earring</div>
@@ -543,7 +544,7 @@
     </div>
 
     <div class="card">
-      <p class="section-title">Metal</p>
+      <p class="section-title">Metal<span class="req">*</span></p>
       <div class="check-grid" id="metal-grid">
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Silver</div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>18K gold</div>
@@ -621,7 +622,7 @@
     </div>
 
     <div class="card">
-      <p class="section-title">Finish</p>
+      <p class="section-title">Finish<span class="req">*</span></p>
       <div class="check-grid" id="finish-grid">
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>High polished</div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Matte</div>
@@ -650,15 +651,15 @@
       <p class="section-title">Order details</p>
       <div class="row col3">
         <div class="field">
-          <label>MOQ (pcs)</label>
+          <label>MOQ (pcs)<span class="req">*</span></label>
           <input type="number" id="f-moq" min="1" placeholder="e.g. 30">
         </div>
         <div class="field">
-          <label>Target price (USD/pc)</label>
+          <label>Target price (USD/pc)<span class="req">*</span></label>
           <input type="text" id="f-price" placeholder="e.g. $12">
         </div>
         <div class="field">
-          <label>Required by</label>
+          <label>Required by<span class="req">*</span></label>
           <input type="date" id="f-deadline">
         </div>
       </div>
