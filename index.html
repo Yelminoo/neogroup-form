@@ -552,25 +552,37 @@
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>9K gold</div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Brass</div>
         <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Bronze</div>
+        <div class="check-item" onclick="toggleCheck(this); toggleMixMetal(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Mix metal</div>
+      </div>
+      <div id="mix-metal-panel" style="display:none;margin-top:10px">
+        <div class="field">
+          <label>Describe metal combination</label>
+          <input type="text" id="f-mix-metal" placeholder="e.g. Silver + 18K gold inlay…">
+        </div>
       </div>
     </div>
 
     <div class="card">
       <p class="section-title">Plating</p>
-      <div class="check-grid">
-        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>No plating</div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Silver plating</div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Rhodium plating</div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="dot-ring"><div class="dot-inner"></div></div>Gold plating</div>
+      <div class="check-grid" id="plating-grid">
+        <div class="check-item" onclick="selectPlating(this,'rhodium')"><div class="dot-ring"><div class="dot-inner"></div></div>Rhodium plating</div>
+        <div class="check-item" onclick="selectPlating(this,'gold')"><div class="dot-ring"><div class="dot-inner"></div></div>Gold plating</div>
+        <div class="check-item" onclick="selectPlating(this,'')"><div class="dot-ring"><div class="dot-inner"></div></div>Platinum plating</div>
+        <div class="check-item" onclick="selectPlating(this,'')"><div class="dot-ring"><div class="dot-inner"></div></div>Palladium plating</div>
+        <div class="check-item" onclick="selectPlating(this,'')"><div class="dot-ring"><div class="dot-inner"></div></div>Clear Ecoating</div>
       </div>
-      <div class="sub-panel" style="margin-top:10px">
-        <p class="sub-panel-title">Plating thickness</p>
+      <div id="rhodium-sub" class="sub-panel" style="display:none;margin-top:10px">
+        <p class="sub-panel-title">Rhodium color</p>
         <div class="chips">
-          <div class="chip" data-grp="plating-thick" onclick="toggleGroup(this)">Flash (0.25–0.5µm)</div>
-          <div class="chip" data-grp="plating-thick" onclick="toggleGroup(this)">1 micron</div>
-          <div class="chip" data-grp="plating-thick" onclick="toggleGroup(this)">2 microns</div>
-          <div class="chip" data-grp="plating-thick" onclick="toggleGroup(this)">2.5µm (vermeil)</div>
-          <div class="chip" data-grp="plating-thick" onclick="toggleGroup(this)">Other</div>
+          <div class="chip" data-grp="plating-color" onclick="toggleGroup(this)">White</div>
+          <div class="chip" data-grp="plating-color" onclick="toggleGroup(this)">Black</div>
+        </div>
+      </div>
+      <div id="gold-sub" class="sub-panel" style="display:none;margin-top:10px">
+        <p class="sub-panel-title">Gold karat</p>
+        <div class="chips">
+          <div class="chip" data-grp="plating-color" onclick="toggleGroup(this)">14K</div>
+          <div class="chip" data-grp="plating-color" onclick="toggleGroup(this)">18K</div>
         </div>
       </div>
     </div>
@@ -831,6 +843,19 @@
     el.classList.toggle('selected');
   }
 
+  function toggleMixMetal(el) {
+    document.getElementById('mix-metal-panel').style.display = el.classList.contains('selected') ? 'block' : 'none';
+  }
+
+  function selectPlating(el, type) {
+    const wasSelected = el.classList.contains('selected');
+    document.querySelectorAll('#plating-grid .check-item').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('[data-grp="plating-color"]').forEach(c => c.classList.remove('selected'));
+    if (!wasSelected) el.classList.add('selected');
+    document.getElementById('rhodium-sub').style.display = (!wasSelected && type === 'rhodium') ? 'block' : 'none';
+    document.getElementById('gold-sub').style.display = (!wasSelected && type === 'gold') ? 'block' : 'none';
+  }
+
   function handleFiles(input) {
     const list = document.getElementById('file-list');
     [...input.files].forEach(f => {
@@ -882,7 +907,8 @@
     ];
     const pData = [
       ['Product type',   getChips('prod-types')],
-      ['Metal',          getChecked('metal-grid')],
+      ['Metal',          [getChecked('metal-grid'), document.getElementById('f-mix-metal').value].filter(Boolean).join(' — ')],
+      ['Plating',        [getChecked('plating-grid'), getGroup('plating-color')].filter(Boolean).join(' / ')],
       ['Stone',          document.getElementById('f-stone').value],
       ['Stone origin',   document.getElementById('f-stone-origin').value],
       ['Finish',         getChecked('finish-grid')],
@@ -945,8 +971,9 @@
       earringUnit:  getGroup('earring-unit'),
       earringType:  getGroup('earring-type'),
       metal:        getChecked('metal-grid'),
-      plating:      getChecked('plating'),
-      platingThick: getGroup('plating-thick'),
+      mixMetal:     document.getElementById('f-mix-metal').value,
+      plating:      getChecked('plating-grid'),
+      platingColor: getGroup('plating-color'),
       stoneType:    document.getElementById('f-stone').value,
       stoneOrigin:  document.getElementById('f-stone-origin').value,
       stoneCount:   document.getElementById('f-stone-count').value,
